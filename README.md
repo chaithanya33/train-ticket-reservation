@@ -15,6 +15,12 @@ war file stored in nexus
 <img width="1909" height="956" alt="Screenshot 2025-11-20 191850" src="https://github.com/user-attachments/assets/ba399721-c638-41cd-a6e3-d722d5213fd7" />
 
 
+Bugs
+
+<img width="1908" height="941" alt="Screenshot 2025-11-20 185612" src="https://github.com/user-attachments/assets/a449f824-83d1-49c3-afcf-8423337a5962" />
+
+
+
 
 
 
