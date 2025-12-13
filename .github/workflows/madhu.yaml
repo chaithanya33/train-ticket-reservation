@@ -1,35 +1,108 @@
-name: ci/cd pipeline to deploy to tomcat
-on:
- push:
-   branches: master
-jobs:
- build-deploy:
-  runs-on: ubuntu-latest
-  steps:
-      - name: checkout code
-        uses: actions/checkout@v3
-      - name: set-up jdk
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'  
-      - name: maven validate
-        run: mvn validate 
-      - name: maven compile
-        run: mvn compile
-      - name: maven test
-        run: mvn test
-      - name: maven package
-        run: mvn package
-      - name: varify war file
-        run: ls -lh target/
-         # Deploy to Tomcat
-      - name: deploy war to tomcat
-        run: | 
-                curl -v -u ${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASSWORD }} \
-                  -T target/TrainBook-1.0.0-SNAPSHOT.war \
-                  "http://${{ secrets.TOMCAT_HOST }}:8080/manager/text/deploy?path=/TrainBook&update=true"
+name: Build and Deploy Application to Tomcat
 
-        
-      
- 
+on:
+  push:
+    branches:
+      - master   # DEV deployment trigger
+
+jobs:
+  # ---------------- DEV Deployment ----------------
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build application
+        run: mvn clean package -DskipTests
+
+      - name: Deploy to DEV Tomcat
+        run: |
+          curl -v -u "${{ secrets.TOMCAT_USER_DEV }}:${{ secrets.TOMCAT_PASSWORD_DEV }}" \
+          -T target/TrainBook-1.0.0-SNAPSHOT.war \
+          "http://${{ secrets.TOMCAT_HOST_DEV }}:8080/manager/text/deploy?path=/TrainBook&update=true"
+
+  # ---------------- TEST Deployment ----------------
+  deploy-test:
+    runs-on: ubuntu-latest
+    needs: deploy-dev
+    environment: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build application
+        run: mvn clean package -DskipTests
+
+      - name: Deploy to TEST Tomcat
+        run: |
+          curl -v -u "${{ secrets.TOMCAT_USER_TEST }}:${{ secrets.TOMCAT_PASSWORD_TEST }}" \
+          -T target/TrainBook-1.0.0-SNAPSHOT.war \
+          "http://${{ secrets.TOMCAT_HOST_TEST }}:8080/manager/text/deploy?path=/TrainBook&update=true"
+
+  # ---------------- PRE-PROD Deployment ----------------
+  deploy-preprod:
+    runs-on: ubuntu-latest
+    needs: deploy-test
+    environment: pre-prod
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build application
+        run: mvn clean package -DskipTests
+
+      - name: Deploy to PRE-PROD Tomcat
+        run: |
+          curl -v -u "${{ secrets.TOMCAT_USER_PRE_PROD }}:${{ secrets.TOMCAT_PASSWORD_PRE_PROD }}" \
+          -T target/TrainBook-1.0.0-SNAPSHOT.war \
+          "http://${{ secrets.TOMCAT_HOST_PRE_PROD }}:8080/manager/text/deploy?path=/TrainBook&update=true"
+
+  # ---------------- PROD Deployment (Manual Approval) ----------------
+  deploy-prod:
+    runs-on: ubuntu-latest
+    needs: deploy-preprod
+    if: github.ref == 'refs/heads/master'
+    environment:
+      name: prod   # Requires manual approval if reviewers are set
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build application
+        run: mvn clean package -DskipTests
+
+      - name: Deploy to PROD Tomcat
+        run: |
+          curl -v -u "${{ secrets.TOMCAT_USER_PROD }}:${{ secrets.TOMCAT_PASSWORD_PROD }}" \
+          -T target/TrainBook-1.0.0-SNAPSHOT.war \
+          "http://${{ secrets.TOMCAT_HOST_PROD }}:8080/manager/text/deploy?path=/TrainBook&update=true"
