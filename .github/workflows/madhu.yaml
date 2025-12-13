@@ -24,7 +24,7 @@ jobs:
       - name: Build application
         run: mvn clean package -DskipTests
 
-      - name: Deploy to DEV Tomcat
+      - name: Deploy to dev Tomcat
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_DEV }}:${{ secrets.TOMCAT_PASSWORD_DEV }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
@@ -49,7 +49,7 @@ jobs:
       - name: Build application
         run: mvn clean package -DskipTests
 
-      - name: Deploy to TEST Tomcat
+      - name: Deploy to test Tomcat
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_TEST }}:${{ secrets.TOMCAT_PASSWORD_TEST }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
@@ -74,7 +74,7 @@ jobs:
       - name: Build application
         run: mvn clean package -DskipTests
 
-      - name: Deploy to PRE-PROD Tomcat
+      - name: Deploy to pre-prod Tomcat
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_PRE_PROD }}:${{ secrets.TOMCAT_PASSWORD_PRE_PROD }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
@@ -101,7 +101,7 @@ jobs:
       - name: Build application
         run: mvn clean package -DskipTests
 
-      - name: Deploy to PROD Tomcat
+      - name: Deploy to prod Tomcat
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_PROD }}:${{ secrets.TOMCAT_PASSWORD_PROD }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
