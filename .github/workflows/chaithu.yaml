@@ -3,8 +3,8 @@ name: Build and Deploy to Tomcat
 on:
   push:
     branches:
-      - master   # DEV deployment
-  workflow_dispatch:   # optional manual trigger
+      - master
+  workflow_dispatch:
 
 jobs:
 
@@ -12,7 +12,6 @@ jobs:
   deploy-dev:
     runs-on: ubuntu-latest
     environment: DEV
-
     steps:
       - uses: actions/checkout@v4
 
@@ -28,15 +27,13 @@ jobs:
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_DEV }}:${{ secrets.TOMCAT_PASSWORD_DEV }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
-          "http://${{ secrets.TOMCAT_HOST_DEV }}:8080/manager/text/deploy?path=/train-ticket-reservation&update=true"
-
+          "http://${{ secrets.TOMCAT_HOST_DEV }}:8080/manager/text/deploy?path=/TrainBook&update=true"
 
   # ---------------- TEST Deployment ----------------
   deploy-test:
     runs-on: ubuntu-latest
     needs: deploy-dev
     environment: TEST
-
     steps:
       - uses: actions/checkout@v4
 
@@ -52,15 +49,13 @@ jobs:
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_TEST }}:${{ secrets.TOMCAT_PASSWORD_TEST }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
-          "http://${{ secrets.TOMCAT_HOST_TEST }}:8080/manager/text/deploy?path=/train-ticket-reservation&update=true"
-
+          "http://${{ secrets.TOMCAT_HOST_TEST }}:8080/manager/text/deploy?path=/TrainBook&update=true"
 
   # ---------------- PRE-PROD Deployment ----------------
   deploy-preprod:
     runs-on: ubuntu-latest
     needs: deploy-test
     environment: PRE-PROD
-
     steps:
       - uses: actions/checkout@v4
 
@@ -76,8 +71,7 @@ jobs:
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_PRE_PROD }}:${{ secrets.TOMCAT_PASSWORD_PRE_PROD }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
-          "http://${{ secrets.TOMCAT_HOST_PRE_PROD }}:8080/manager/text/deploy?path=/train-ticket-reservation&update=true"
-
+          "http://${{ secrets.TOMCAT_HOST_PRE_PROD }}:8080/manager/text/deploy?path=/TrainBook&update=true"
 
   # ---------------- PROD Deployment (Manual Approval) ----------------
   deploy-prod:
@@ -85,8 +79,7 @@ jobs:
     needs: deploy-preprod
     if: github.ref == 'refs/heads/master'
     environment:
-      name: PROD   # Enable Required Reviewers here
-
+      name: PROD
     steps:
       - uses: actions/checkout@v4
 
@@ -102,4 +95,4 @@ jobs:
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_PROD }}:${{ secrets.TOMCAT_PASSWORD_PROD }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
-          "http://${{ secrets.TOMCAT_HOST_PROD }}:8080/manager/text/deploy?path=/train-ticket-reservation&update=true"
+          "http://${{ secrets.TOMCAT_HOST_PROD }}:8080/manager/text/deploy?path=/TrainBook&update=true"
