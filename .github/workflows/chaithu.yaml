@@ -20,12 +20,11 @@ jobs:
           java-version: '17'
 
       - run: mvn clean package -DskipTests
-        working-directory: train-ticket-reservation
 
       - name: Deploy to DEV Tomcat
         run: |
           curl -v -u ${{ secrets.TOMCAT_USER_DEV }}:${{ secrets.TOMCAT_PASSWORD_DEV }} \
-          -T train-ticket-reservation/target/TrainBook-1.0.0-SNAPSHOT.war \
+          -T target/TrainBook-1.0.0-SNAPSHOT.war \
           "http://${{ secrets.TOMCAT_HOST_DEV }}:8080/manager/text/deploy?path=/TrainBook&update=true"
 
   # ---------------- TEST Deployment ----------------
@@ -42,12 +41,11 @@ jobs:
           java-version: '17'
 
       - run: mvn clean package -DskipTests
-        working-directory: train-ticket-reservation
 
       - name: Deploy to TEST Tomcat
         run: |
           curl -v -u ${{ secrets.TOMCAT_USER_TEST }}:${{ secrets.TOMCAT_PASSWORD_TEST }} \
-          -T train-ticket-reservation/target/TrainBook-1.0.0-SNAPSHOT.war \
+          -T target/TrainBook-1.0.0-SNAPSHOT.war \
           "http://${{ secrets.TOMCAT_HOST_TEST }}:8080/manager/text/deploy?path=/TrainBook&update=true"
 
   # ---------------- PRE-PROD Deployment ----------------
@@ -64,12 +62,11 @@ jobs:
           java-version: '17'
 
       - run: mvn clean package -DskipTests
-        working-directory: train-ticket-reservation
 
       - name: Deploy to PRE-PROD Tomcat
         run: |
           curl -v -u ${{ secrets.TOMCAT_USER_PRE_PROD }}:${{ secrets.TOMCAT_PASSWORD_PRE_PROD }} \
-          -T train-ticket-reservation/target/TrainBook-1.0.0-SNAPSHOT.war \
+          -T target/TrainBook-1.0.0-SNAPSHOT.war \
           "http://${{ secrets.TOMCAT_HOST_PRE_PROD }}:8080/manager/text/deploy?path=/TrainBook&update=true"
 
   # ---------------- PROD Deployment (Manual Approval) ----------------
@@ -89,10 +86,9 @@ jobs:
           java-version: '17'
 
       - run: mvn clean package -DskipTests
-        working-directory: train-ticket-reservation
 
       - name: Deploy to PROD Tomcat
         run: |
           curl -v -u ${{ secrets.TOMCAT_USER_PROD }}:${{ secrets.TOMCAT_PASSWORD_PROD }} \
-          -T train-ticket-reservation/target/TrainBook-1.0.0-SNAPSHOT.war \
+          -T target/TrainBook-1.0.0-SNAPSHOT.war \
           "http://${{ secrets.TOMCAT_HOST_PROD }}:8080/manager/text/deploy?path=/TrainBook&update=true"
