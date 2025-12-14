@@ -1,10 +1,10 @@
-name: Build and Deploy to Tomcat
+name: Build and Deploy Application to Tomcat
 
 on:
   push:
     branches:
-      - master
-  workflow_dispatch:
+      - master   # DEV deployment
+  workflow_dispatch:  # optional manual trigger
 
 jobs:
 
@@ -12,25 +12,31 @@ jobs:
     runs-on: ubuntu-latest
     environment: DEV
     steps:
+      # ---------------- Checkout the repo ----------------
       - uses: actions/checkout@v4
 
+      # ---------------- Setup Java ----------------
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
+      # ---------------- Build WAR ----------------
       - name: Build WAR
         run: mvn clean package -DskipTests
 
-      - name: Rename WAR to match context path
+      # ---------------- Rename WAR to match context path ----------------
+      - name: Rename WAR
         run: mv target/TrainBook-1.0.0-SNAPSHOT.war target/train-ticket-reservation.war
 
+      # ---------------- Deploy to DEV ----------------
       - name: Deploy to DEV Tomcat
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_DEV }}:${{ secrets.TOMCAT_PASSWORD_DEV }}" \
           -T target/train-ticket-reservation.war \
           "http://${{ secrets.TOMCAT_HOST_DEV }}:8080/manager/text/deploy?path=/train-ticket-reservation&update=true"
 
+      # ---------------- Deploy to TEST ----------------
       - name: Deploy to TEST Tomcat
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_TEST }}:${{ secrets.TOMCAT_PASSWORD_TEST }}" \
