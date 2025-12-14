@@ -24,7 +24,7 @@ jobs:
       - name: Deploy to DEV Tomcat
         run: |
           curl -v -u ${{ secrets.TOMCAT_USER_DEV }}:${{ secrets.TOMCAT_PASSWORD_DEV }} \
-          -T target/TrainBook-1.0.0-SNAPSHOT.war \
+          -T /root/train-ticket-reservation/target/TrainBook-1.0.0-SNAPSHOT.war \
           "http://${{ secrets.TOMCAT_HOST_DEV }}:8080/manager/text/deploy?path=/TrainBook&update=true"
 
   # ---------------- TEST Deployment ----------------
