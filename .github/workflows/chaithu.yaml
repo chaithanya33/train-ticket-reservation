@@ -28,7 +28,7 @@ jobs:
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_DEV }}:${{ secrets.TOMCAT_PASSWORD_DEV }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
-          "http://${{ secrets.TOMCAT_HOST_DEV }}:8080/manager/text/deploy?path=/TrainBook&update=true"
+          "http://${{ secrets.TOMCAT_HOST_DEV }}:8080/manager/text/deploy?path=/train-ticket-reservation&update=true"
 
 
   # ---------------- TEST Deployment ----------------
@@ -52,7 +52,7 @@ jobs:
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_TEST }}:${{ secrets.TOMCAT_PASSWORD_TEST }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
-          "http://${{ secrets.TOMCAT_HOST_TEST }}:8080/manager/text/deploy?path=/TrainBook&update=true"
+          "http://${{ secrets.TOMCAT_HOST_TEST }}:8080/manager/text/deploy?path=/train-ticket-reservation&update=true"
 
 
   # ---------------- PRE-PROD Deployment ----------------
@@ -76,7 +76,7 @@ jobs:
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_PRE_PROD }}:${{ secrets.TOMCAT_PASSWORD_PRE_PROD }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
-          "http://${{ secrets.TOMCAT_HOST_PRE_PROD }}:8080/manager/text/deploy?path=/TrainBook&update=true"
+          "http://${{ secrets.TOMCAT_HOST_PRE_PROD }}:8080/manager/text/deploy?path=/train-ticket-reservation&update=true"
 
 
   # ---------------- PROD Deployment (Manual Approval) ----------------
@@ -102,4 +102,4 @@ jobs:
         run: |
           curl -v -u "${{ secrets.TOMCAT_USER_PROD }}:${{ secrets.TOMCAT_PASSWORD_PROD }}" \
           -T target/TrainBook-1.0.0-SNAPSHOT.war \
-          "http://${{ secrets.TOMCAT_HOST_PROD }}:8080/manager/text/deploy?path=/TrainBook&update=true"
+          "http://${{ secrets.TOMCAT_HOST_PROD }}:8080/manager/text/deploy?path=/train-ticket-reservation&update=true"
